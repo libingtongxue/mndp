@@ -113,7 +113,6 @@ namespace mndp
                     ushort identity_len = BitConverter.ToUInt16(identity_length, 0);
                     byte[] identity_value = binaryReader.ReadBytes(identity_len);
                     string Identity = Encoding.Default.GetString(identity_value);
-                    //Console.WriteLine(Identity);
                     if (BitConverter.ToUInt16(identity_type, 0) == TlvTypeIdentity)
                     {
                         mikroTikInfo.Identity = Encoding.Default.GetString(identity_value);
