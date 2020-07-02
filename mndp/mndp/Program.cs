@@ -14,9 +14,22 @@ namespace mndp
         {
             MKMndp mkMndp = new MKMndp();
             mkMndp.Start();
-            while (!Console.KeyAvailable)
+            bool Flag = true;
+            while (Flag)
             {
-                Thread.Sleep(100);
+                Console.SetCursorPosition(0, 0);
+                if (Console.KeyAvailable)
+                {
+                    if (Console.ReadKey().Key == ConsoleKey.Enter)
+                    {
+                        Flag = false;
+                    }
+                }
+                else
+                {
+                    Console.Write(mkMndp.GetMikroTikInfos.Count);
+                    Thread.Sleep(100);
+                }
             }
             List<MikroTikInfo> mikroTikInfos = mkMndp.GetMikroTikInfos;
             mikroTikInfos.ForEach((m) => Console.WriteLine("IPAddr:{0},MacAddr:{1},Identify:{2},Version{3},Platform:{4}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform));
