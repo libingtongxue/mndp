@@ -25,10 +25,10 @@ namespace mndp
     }
     class MKMndp
     {
-        private static readonly ushort TlvTypeMacAddr = 1;
-        private static readonly ushort TlvTypeIdentity = 5;
-        private static readonly ushort TlvTypeVersion = 7;
-        private static readonly ushort TlvTypePlatform = 8;
+        static readonly ushort TlvTypeMacAddr = 1;
+        static readonly ushort TlvTypeIdentity = 5;
+        static readonly ushort TlvTypeVersion = 7;
+        static readonly ushort TlvTypePlatform = 8;
         static readonly int Port = 5678;
         static readonly Byte[] sendBytes = new Byte[] { 0x00, 0x00, 0x00, 0x00 };
         static readonly UdpClient udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port));
@@ -70,9 +70,6 @@ namespace mndp
                 udpClient.Send(sendBytes, sendBytes.Length, IPBroadcast);
                 Thread.Sleep(1000);
             }
-        }
-        private static void Timer_Callback(object state)
-        {
         }
         private void ReceiveMsg()
         {
