@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace mndp
 {
@@ -88,6 +88,8 @@ namespace mndp
                 //ReceiveData:0000；
                 if (receiveBytes.Length > 4)
                 {
+                    //可能返回0.0.0.0未配置的设备。所以过滤掉。
+                    //
                     if (IPAddress.Any.ToString() != RemoteIpEndPoint.Address.ToString())
                     {
                         using MemoryStream memoryStream = new MemoryStream(receiveBytes);
@@ -167,6 +169,7 @@ namespace mndp
             if (threadReceive.ThreadState != ThreadState.Aborted)
             {
                 receiveFlag = false;
+                Thread.Sleep(1000);
                 if (threadSend.ThreadState != ThreadState.Aborted)
                 {
                     Timer.Change(Timeout.Infinite, Timeout.Infinite);
