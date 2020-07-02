@@ -5,7 +5,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Collections.Generic;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace mndp
 {
@@ -19,6 +18,8 @@ namespace mndp
             {
                 Thread.Sleep(100);
             }
+            //List<MikroTikInfo> mikroTikInfos = mkMndp.GetMikroTikInfos;
+            //mikroTikInfos.ForEach((m) => Console.WriteLine("IPAddr:{0},MacAddr:{1},Identify:{2},Version{3},Platform:{4}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform));
             mkMndp.Stop();
         }
     }
@@ -35,7 +36,6 @@ namespace mndp
         readonly Thread threadSend;
         readonly Thread threadReceive;
         static readonly List<MikroTikInfo> mikroTikInfos = new List<MikroTikInfo>();
-        static readonly Timer Timer = new Timer(Timer_Callback, null, Timeout.Infinite, Timeout.Infinite);
         static bool sendFlag = true;
         static bool receiveFlag = true;
         public MKMndp()
