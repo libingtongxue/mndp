@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Collections.Generic;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace mndp
 {
@@ -33,19 +34,10 @@ namespace mndp
         static IPEndPoint IPBroadcast;
         readonly Thread threadSend;
         readonly Thread threadReceive;
-        static List<MikroTikInfo> mikroTikInfos = new List<MikroTikInfo>();
+        static readonly List<MikroTikInfo> mikroTikInfos = new List<MikroTikInfo>();
         static readonly Timer Timer = new Timer(Timer_Callback, null, Timeout.Infinite, Timeout.Infinite);
-        static readonly int DueTime = 0;
-        static readonly int Period = 1000;
+        static bool sendFlag = true;
         static bool receiveFlag = true;
-        struct MikroTikInfo
-        {
-            public string IPAddr;
-            public string MacAddr;
-            public string Identity;
-            public string Version;
-            public string Platform;
-        }
         public MKMndp()
         {
             IPBroadcast = new IPEndPoint(IPAddress.Broadcast, Port);
@@ -73,11 +65,14 @@ namespace mndp
         }
         private void SendMsg()
         {
-            Timer.Change(DueTime, Period);
+            while (sendFlag)
+            {
+                udpClient.Send(sendBytes, sendBytes.Length, IPBroadcast);
+                Thread.Sleep(1000);
+            }
         }
         private static void Timer_Callback(object state)
         {
-            udpClient.Send(sendBytes, sendBytes.Length, IPBroadcast);
         }
         private void ReceiveMsg()
         {
@@ -94,7 +89,7 @@ namespace mndp
                     {
                         using MemoryStream memoryStream = new MemoryStream(receiveBytes);
                         using BinaryReader binaryReader = new BinaryReader(memoryStream);
-                        MikroTikInfo mikroTikInfo = new MikroTikInfo
+                        MikroTikInfo mikroTikInfo = new MikroTikInfo()
                         {
                             IPAddr = RemoteIpEndPoint.Address.ToString()
                         };
@@ -164,6 +159,13 @@ namespace mndp
                 }
             }
         }
+        public List<MikroTikInfo> GetMikroTikInfos
+        {
+            get
+            {
+                return mikroTikInfos;
+            }
+        }
         public void Stop()
         {            
             if (threadReceive.ThreadState != ThreadState.Aborted)
@@ -172,9 +174,17 @@ namespace mndp
                 Thread.Sleep(1000);
                 if (threadSend.ThreadState != ThreadState.Aborted)
                 {
-                    Timer.Change(Timeout.Infinite, Timeout.Infinite);
+                    sendFlag = false;
                 }
             }
         }
+    }
+    class MikroTikInfo
+    {
+        public string IPAddr { get; set; }
+        public string MacAddr { get; set; }
+        public string Identity { get; set; }
+        public string Version { get; set; }
+        public string Platform { get; set; }
     }
 }
