@@ -100,49 +100,49 @@ namespace mndp
                         //TLV格式的数据指针偏移4
                         binaryReader.BaseStream.Position = 4;
                         //开始读取TLV格式的数据
-                        byte[] mac_bytes = binaryReader.ReadBytes(2);
-                        Array.Reverse(mac_bytes);
-                        byte[] mac_length = binaryReader.ReadBytes(2);
-                        Array.Reverse(mac_length);
-                        ushort b_len = BitConverter.ToUInt16(mac_length, 0);
-                        byte[] mac_value = binaryReader.ReadBytes(b_len);
-                        string MacAddr = BitConverter.ToString(mac_value).Replace("-", ":");
-                        if (BitConverter.ToUInt16(mac_bytes, 0) == TlvTypeMacAddr)
+                        byte[] Mac_Type = binaryReader.ReadBytes(2);
+                        Array.Reverse(Mac_Type);
+                        byte[] Mac_Length = binaryReader.ReadBytes(2);
+                        Array.Reverse(Mac_Length);
+                        ushort Mac_Length_Valule = BitConverter.ToUInt16(Mac_Length, 0);
+                        byte[] Mac_Value = binaryReader.ReadBytes(Mac_Length_Valule);
+                        string MacAddr = BitConverter.ToString(Mac_Value).Replace("-", ":");
+                        if (BitConverter.ToUInt16(Mac_Type, 0) == TlvTypeMacAddr)
                         {
-                            mikroTikInfo.MacAddr = BitConverter.ToString(mac_value).Replace("-", ":");
+                            mikroTikInfo.MacAddr = MacAddr;
                         }
-                        byte[] identity_type = binaryReader.ReadBytes(2);
-                        Array.Reverse(identity_type);
-                        byte[] identity_length = binaryReader.ReadBytes(2);
-                        Array.Reverse(identity_length);
-                        ushort identity_len = BitConverter.ToUInt16(identity_length, 0);
-                        byte[] identity_value = binaryReader.ReadBytes(identity_len);
-                        string Identity = Encoding.Default.GetString(identity_value);
-                        if (BitConverter.ToUInt16(identity_type, 0) == TlvTypeIdentity)
+                        byte[] Identity_Type = binaryReader.ReadBytes(2);
+                        Array.Reverse(Identity_Type);
+                        byte[] Identity_Length = binaryReader.ReadBytes(2);
+                        Array.Reverse(Identity_Length);
+                        ushort Identity_Length_Value = BitConverter.ToUInt16(Identity_Length, 0);
+                        byte[] Identity_Value = binaryReader.ReadBytes(Identity_Length_Value);
+                        string Identity = Encoding.Default.GetString(Identity_Value);
+                        if (BitConverter.ToUInt16(Identity_Type, 0) == TlvTypeIdentity)
                         {
-                            mikroTikInfo.Identity = Encoding.Default.GetString(identity_value);
+                            mikroTikInfo.Identity = Identity;
                         }
-                        byte[] version_type = binaryReader.ReadBytes(2);
-                        Array.Reverse(version_type);
-                        byte[] version_length = binaryReader.ReadBytes(2);
-                        Array.Reverse(version_length);
-                        ushort version_len = BitConverter.ToUInt16(version_length, 0);
-                        byte[] version_value = binaryReader.ReadBytes(version_len);
-                        string Version = Encoding.Default.GetString(version_value);
-                        if (BitConverter.ToUInt16(version_type, 0) == TlvTypeVersion)
+                        byte[] Version_Type = binaryReader.ReadBytes(2);
+                        Array.Reverse(Version_Type);
+                        byte[] Version_Length = binaryReader.ReadBytes(2);
+                        Array.Reverse(Version_Length);
+                        ushort Version_Length_Value = BitConverter.ToUInt16(Version_Length, 0);
+                        byte[] Version_Value_Length = binaryReader.ReadBytes(Version_Length_Value);
+                        string Version = Encoding.Default.GetString(Version_Value_Length);
+                        if (BitConverter.ToUInt16(Version_Type, 0) == TlvTypeVersion)
                         {
-                            mikroTikInfo.Version = Encoding.Default.GetString(version_value);
+                            mikroTikInfo.Version = Version;
                         }
-                        byte[] platform_type = binaryReader.ReadBytes(2);
-                        Array.Reverse(platform_type);
-                        byte[] platform_length = binaryReader.ReadBytes(2);
-                        Array.Reverse(platform_length);
-                        ushort platform_len = BitConverter.ToUInt16(platform_length, 0);
-                        byte[] platform_value = binaryReader.ReadBytes(platform_len);
-                        string Platform = Encoding.Default.GetString(platform_value);
-                        if (BitConverter.ToUInt16(platform_type, 0) == TlvTypePlatform)
+                        byte[] Platform_Type = binaryReader.ReadBytes(2);
+                        Array.Reverse(Platform_Type);
+                        byte[] Platform_Length = binaryReader.ReadBytes(2);
+                        Array.Reverse(Platform_Length);
+                        ushort Platform_Length_Value = BitConverter.ToUInt16(Platform_Length, 0);
+                        byte[] Platform_Value = binaryReader.ReadBytes(Platform_Length_Value);
+                        string Platform = Encoding.Default.GetString(Platform_Value);
+                        if (BitConverter.ToUInt16(Platform_Type, 0) == TlvTypePlatform)
                         {
-                            mikroTikInfo.Platform = Encoding.Default.GetString(platform_value);
+                            mikroTikInfo.Platform = Platform;
                         }
                         bool flag = false;
                         foreach (MikroTikInfo t in mikroTikInfos)
