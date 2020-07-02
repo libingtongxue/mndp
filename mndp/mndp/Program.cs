@@ -18,8 +18,8 @@ namespace mndp
             {
                 Thread.Sleep(100);
             }
-            //List<MikroTikInfo> mikroTikInfos = mkMndp.GetMikroTikInfos;
-            //mikroTikInfos.ForEach((m) => Console.WriteLine("IPAddr:{0},MacAddr:{1},Identify:{2},Version{3},Platform:{4}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform));
+            List<MikroTikInfo> mikroTikInfos = mkMndp.GetMikroTikInfos;
+            mikroTikInfos.ForEach((m) => Console.WriteLine("IPAddr:{0},MacAddr:{1},Identify:{2},Version{3},Platform:{4}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform));
             mkMndp.Stop();
         }
     }
@@ -150,7 +150,7 @@ namespace mndp
                         if (!flag)
                         {
                             mikroTikInfos.Add(mikroTikInfo);
-                            Console.WriteLine("IPAddr:{0},MacAddr:{1},Identify:{2},Version{3},Platform:{4}", IPAddr, MacAddr, Identity, Version, Platform);
+                            //Console.WriteLine("IPAddr:{0},MacAddr:{1},Identify:{2},Version{3},Platform:{4}", IPAddr, MacAddr, Identity, Version, Platform);
                         }
                     }
                 }
