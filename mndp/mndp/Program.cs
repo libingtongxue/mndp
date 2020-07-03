@@ -17,6 +17,7 @@ namespace mndp
             bool Flag = true;
             while (Flag)
             {
+                Console.Clear();
                 Console.SetCursorPosition(0, 0);
                 if (Console.KeyAvailable)
                 {
@@ -27,18 +28,20 @@ namespace mndp
                 }
                 else
                 {
-                    Console.Write(mkMndp.GetMikroTikInfos.Count);
-                    Thread.Sleep(100);
+                    for(int i = 0; i < mkMndp.GetMikroTikInfos.Count; i++)
+                    {
+                        Console.Write("-");
+                    }
+                    Thread.Sleep(300);
                 }
             }
             mkMndp.Stop();
             List<MikroTikInfo> mikroTikInfos = mkMndp.GetMikroTikInfos;
-            mikroTikInfos.ForEach((m) => Console.WriteLine("IPAddr:{0},MacAddr:{1},Identify:{2},Version{3},Platform:{4},Uptime:{5},Board:{6}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform, m.Uptime, m.Board));
+            mikroTikInfos.ForEach((m) => Console.WriteLine("IPAddr:{0},MacAddr:{1},Identity:{2},Version:{3},Platform:{4},Uptime:{5},Board:{6}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform, m.Uptime, m.Board));
         }
     }
     class MKMndp
     {
-
         static readonly ushort TlvTypeMacAddr = 1;
         static readonly ushort TlvTypeIdentity = 5;
         static readonly ushort TlvTypeVersion = 7;
@@ -198,7 +201,7 @@ namespace mndp
                         bool flag = false;
                         foreach (MikroTikInfo t in mikroTikInfos)
                         {
-                            if (t.IPAddr == RemoteIpEndPoint.Address.ToString())
+                            if (t.MacAddr == MacAddr)
                             {
                                 flag = true;
                                 break;
