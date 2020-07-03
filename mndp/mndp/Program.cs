@@ -50,6 +50,9 @@ namespace mndp
         static readonly ushort TlvTypeUptime = 10;
         static readonly ushort TlvTypeSoftwareID = 11;
         static readonly ushort TlvTypeBoard = 12;
+        static readonly ushort TlvTypeUnpack = 14;
+        static readonly ushort TlvTypeIPv6Addr = 15;
+        static readonly ushort TlvTypeInterface = 16;
         static readonly int Port = 5678;
         static readonly Byte[] sendBytes = new Byte[] { 0x00, 0x00, 0x00, 0x00 };
         static readonly UdpClient udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port));
@@ -199,6 +202,39 @@ namespace mndp
                         {
                             mikroTikInfo.Board = Board;
                         }
+                        byte[] Tlv_Unpack_Type = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_Unpack_Type);
+                        byte[] Tlv_Unpack_Length = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_Unpack_Length);
+                        ushort Tlv_Unpack_Length_Value = BitConverter.ToUInt16(Tlv_Unpack_Length);
+                        byte[] Tlv_Unpack_Value = binaryReader.ReadBytes(Tlv_Unpack_Length_Value);
+                        string Unpack = Encoding.Default.GetString(Tlv_Unpack_Value);
+                        if (BitConverter.ToUInt16(Tlv_Unpack_Type, 0) == TlvTypeUnpack)
+                        {
+                            mikroTikInfo.Unpack = Unpack;
+                        }
+                        byte[] Tlv_IPv6Addr_Type = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_IPv6Addr_Type);
+                        byte[] Tlv_IPv6Addr_Length = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_IPv6Addr_Length);
+                        ushort Tlv_IPv6Addr_Length_Value = BitConverter.ToUInt16(Tlv_IPv6Addr_Length);
+                        byte[] Tlv_IPv6Addr_Value = binaryReader.ReadBytes(Tlv_IPv6Addr_Length_Value);
+                        string IPv6Addr = Encoding.Default.GetString(Tlv_IPv6Addr_Value);
+                        if (BitConverter.ToUInt16(Tlv_IPv6Addr_Type, 0) == TlvTypeIPv6Addr)
+                        {
+                            mikroTikInfo.IPv6Addr = IPv6Addr;
+                        }
+                        byte[] Tlv_InterfaceName_Type = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_InterfaceName_Type);
+                        byte[] Tlv_InterfaceName_Length = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_InterfaceName_Length);
+                        ushort Tlv_InterfaceName_Length_Value = BitConverter.ToUInt16(Tlv_InterfaceName_Length);
+                        byte[] Tlv_InterfaceName_Value = binaryReader.ReadBytes(Tlv_InterfaceName_Length_Value);
+                        string InterfaceName = Encoding.Default.GetString(Tlv_InterfaceName_Value);
+                        if (BitConverter.ToUInt16(Tlv_InterfaceName_Type, 0) == TlvTypeInterface)
+                        {
+                            mikroTikInfo.InterfaceName = InterfaceName;
+                        }
                         bool flag = false;
                         foreach (MikroTikInfo t in mikroTikInfos)
                         {
@@ -262,5 +298,8 @@ namespace mndp
         public string Uptime { get; set; }
         public string SoftwareID { get; set; }
         public string Board { get; set; }
+        public string Unpack { get; set; }
+        public string IPv6Addr { get; set; }
+        public string InterfaceName { get; set; }
     }
 }

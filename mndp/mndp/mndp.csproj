@@ -3,6 +3,11 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <Description>MikorTik Neighbor Discovery Protocol</Description>
+    <Authors>LiBing</Authors>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <AssemblyOriginatorKeyFile>LiBing.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
 </Project>
