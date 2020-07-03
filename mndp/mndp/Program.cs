@@ -31,9 +31,9 @@ namespace mndp
                     Thread.Sleep(100);
                 }
             }
+            mkMndp.Stop();
             List<MikroTikInfo> mikroTikInfos = mkMndp.GetMikroTikInfos;
             mikroTikInfos.ForEach((m) => Console.WriteLine("IPAddr:{0},MacAddr:{1},Identify:{2},Version{3},Platform:{4},Uptime:{5},Board:{6}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform, m.Uptime, m.Board));
-            mkMndp.Stop();
         }
     }
     class MKMndp
@@ -75,7 +75,7 @@ namespace mndp
                 threadSend.Start();
                 if(threadSend.ThreadState == ThreadState.Running)
                 {
-                    Console.WriteLine("ThreadSend Is Running");
+                    //Console.WriteLine("ThreadSend Is Running");
                 }
             }
             //ReceiveMsgThread
@@ -84,7 +84,7 @@ namespace mndp
                 threadReceive.Start();
                 if(threadReceive.ThreadState == ThreadState.Running)
                 {
-                    Console.WriteLine("ThreadReceive Is Running");
+                    //Console.WriteLine("ThreadReceive Is Running");
                 }
             }
         }
