@@ -30,7 +30,7 @@ namespace mndp
                 {
                     for(int i = 0; i < mkMndp.GetMikroTikInfos.Count; i++)
                     {
-                        Console.Write("-");
+                        Console.Write(".");
                     }
                     Thread.Sleep(300);
                 }
@@ -203,6 +203,11 @@ namespace mndp
                         {
                             if (t.MacAddr == MacAddr)
                             {
+                                int i = mikroTikInfos.IndexOf(t);
+                                ListRemove listRemove = new ListRemove(MikroTikInfoRemove);
+                                listRemove(i);
+                                ListAdd listAdd = new ListAdd(MikroTikInfoAdd);
+                                listAdd(mikroTikInfo);
                                 flag = true;
                                 break;
                             }
@@ -214,6 +219,16 @@ namespace mndp
                     }
                 }
             }
+        }
+        delegate void ListRemove(int i);
+        private void MikroTikInfoRemove(int i)
+        {
+            mikroTikInfos.RemoveAt(i);
+        }
+        delegate void ListAdd(MikroTikInfo m);
+        private void MikroTikInfoAdd(MikroTikInfo m)
+        {
+            mikroTikInfos.Add(m);
         }
         public List<MikroTikInfo> GetMikroTikInfos
         {
