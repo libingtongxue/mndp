@@ -32,16 +32,20 @@ namespace mndp
                 }
             }
             List<MikroTikInfo> mikroTikInfos = mkMndp.GetMikroTikInfos;
-            mikroTikInfos.ForEach((m) => Console.WriteLine("IPAddr:{0},MacAddr:{1},Identify:{2},Version{3},Platform:{4}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform));
+            mikroTikInfos.ForEach((m) => Console.WriteLine("IPAddr:{0},MacAddr:{1},Identify:{2},Version{3},Platform:{4},Uptime:{5},Board:{6}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform, m.Uptime, m.Board));
             mkMndp.Stop();
         }
     }
     class MKMndp
     {
+
         static readonly ushort TlvTypeMacAddr = 1;
         static readonly ushort TlvTypeIdentity = 5;
         static readonly ushort TlvTypeVersion = 7;
         static readonly ushort TlvTypePlatform = 8;
+        static readonly ushort TlvTypeUptime = 10;
+        static readonly ushort TlvTypeSoftwareID = 11;
+        static readonly ushort TlvTypeBoard = 12;
         static readonly int Port = 5678;
         static readonly Byte[] sendBytes = new Byte[] { 0x00, 0x00, 0x00, 0x00 };
         static readonly UdpClient udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port));
@@ -69,11 +73,19 @@ namespace mndp
             if (threadSend.ThreadState != ThreadState.Running)
             {
                 threadSend.Start();
+                if(threadSend.ThreadState == ThreadState.Running)
+                {
+                    Console.WriteLine("ThreadSend Is Running");
+                }
             }
             //ReceiveMsgThread
             if (threadReceive.ThreadState != ThreadState.Running)
             {
                 threadReceive.Start();
+                if(threadReceive.ThreadState == ThreadState.Running)
+                {
+                    Console.WriteLine("ThreadReceive Is Running");
+                }
             }
         }
         private void SendMsg()
@@ -93,8 +105,7 @@ namespace mndp
                 //ReceiveData:0000；
                 if (receiveBytes.Length > 4)
                 {
-                    //可能返回0.0.0.0未配置的设备。所以过滤掉。
-                    //
+                    //可能返回0.0.0.0未配置的设备。过滤掉。
                     if (IPAddress.Any.ToString() != RemoteIpEndPoint.Address.ToString())
                     {
                         using MemoryStream memoryStream = new MemoryStream(receiveBytes);
@@ -151,6 +162,39 @@ namespace mndp
                         {
                             mikroTikInfo.Platform = Platform;
                         }
+                        byte[] Tlv_Uptime_Type = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_Uptime_Type);
+                        byte[] Tlv_Uptime_Length = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_Uptime_Length);
+                        ushort Tlv_Uptime_Length_Value = BitConverter.ToUInt16(Tlv_Uptime_Length, 0);
+                        byte[] Tlv_Uptime_Value = binaryReader.ReadBytes(Tlv_Uptime_Length_Value);
+                        string Uptime = TimeSpan.FromSeconds(BitConverter.ToUInt32(Tlv_Uptime_Value, 0)).ToString().Replace(".", "d");
+                        if (BitConverter.ToUInt16(Tlv_Uptime_Type, 0) == TlvTypeUptime)
+                        {
+                            mikroTikInfo.Uptime = Uptime;
+                        }
+                        byte[] Tlv_SoftwareID_Type = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_SoftwareID_Type);
+                        byte[] Tlv_SoftwareID_Length = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_SoftwareID_Length);
+                        ushort Tlv_SoftwareID_Length_Value = BitConverter.ToUInt16(Tlv_SoftwareID_Length, 0);
+                        byte[] Tlv_SoftwareID_Value = binaryReader.ReadBytes(Tlv_SoftwareID_Length_Value);
+                        string SoftwareID = Encoding.Default.GetString(Tlv_SoftwareID_Value);
+                        if (BitConverter.ToUInt16(Tlv_SoftwareID_Type, 0) == TlvTypeSoftwareID)
+                        {
+                            mikroTikInfo.SoftwareID = SoftwareID;
+                        }
+                        byte[] Tlv_Board_Type = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_Board_Type);
+                        byte[] Tlv_Board_Lenght = binaryReader.ReadBytes(2);
+                        Array.Reverse(Tlv_Board_Lenght);
+                        ushort Tlv_Board_Length_Value = BitConverter.ToUInt16(Tlv_Board_Lenght, 0);
+                        byte[] Tlv_Board_Value = binaryReader.ReadBytes(Tlv_Board_Length_Value);
+                        string Board = Encoding.Default.GetString(Tlv_Board_Value);
+                        if (BitConverter.ToUInt16(Tlv_Board_Type, 0) == TlvTypeBoard)
+                        {
+                            mikroTikInfo.Board = Board;
+                        }
                         bool flag = false;
                         foreach (MikroTikInfo t in mikroTikInfos)
                         {
@@ -163,7 +207,6 @@ namespace mndp
                         if (!flag)
                         {
                             mikroTikInfos.Add(mikroTikInfo);
-                            //Console.WriteLine("IPAddr:{0},MacAddr:{1},Identify:{2},Version{3},Platform:{4}", IPAddr, MacAddr, Identity, Version, Platform);
                         }
                     }
                 }
@@ -196,5 +239,8 @@ namespace mndp
         public string Identity { get; set; }
         public string Version { get; set; }
         public string Platform { get; set; }
+        public string Uptime { get; set; }
+        public string SoftwareID { get; set; }
+        public string Board { get; set; }
     }
 }
