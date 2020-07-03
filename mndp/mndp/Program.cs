@@ -79,6 +79,7 @@ namespace mndp
             //SendMsgThread
             if (threadSend.ThreadState != ThreadState.Running)
             {
+                threadSend.Priority = ThreadPriority.AboveNormal;
                 threadSend.Start();
                 if(threadSend.ThreadState == ThreadState.Running)
                 {
@@ -88,6 +89,7 @@ namespace mndp
             //ReceiveMsgThread
             if (threadReceive.ThreadState != ThreadState.Running)
             {
+                threadReceive.Priority = ThreadPriority.AboveNormal;
                 threadReceive.Start();
                 if(threadReceive.ThreadState == ThreadState.Running)
                 {
