@@ -17,9 +17,16 @@ namespace mndp
             bool PortFlag = true;
             while(PortFlag)
             {
+                Console.Clear();
+                Console.SetCursorPosition(0, 0);
                 if (mndp.GetPortStatus())
                 {
                     Console.WriteLine("Port Is Not Available");
+                    for (int i = 0; i < 6; i++)
+                    {
+                        Console.Write(".");
+                        Thread.Sleep(50);
+                    }
                 }
                 else
                 {
@@ -42,6 +49,7 @@ namespace mndp
                 }
                 else
                 {
+                    Console.Write("Scanning");
                     for(int i = 0; i < mndp.GetMikroTikInfos.Count; i++)
                     {
                         Console.Write(".");
@@ -99,7 +107,6 @@ namespace mndp
             {
                 if(e.Address.ToString() != IPAddress.Any.ToString())                   
                 {
-                    Console.WriteLine(e.ToString());
                     if (e.Port == Port)
                     {
                         portStatus = true;
