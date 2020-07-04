@@ -163,11 +163,11 @@ namespace mndp
                         {
                             using MemoryStream memoryStream = new MemoryStream(receiveBytes);
                             using BinaryReader binaryReader = new BinaryReader(memoryStream);
+                            string IPAddr = RemoteIpEndPoint.Address.ToString(); 
                             MikroTikInfo mikroTikInfo = new MikroTikInfo()
                             {
-                                IPAddr = RemoteIpEndPoint.Address.ToString()
+                                IPAddr = IPAddr
                             };
-                            string IPAddr = RemoteIpEndPoint.Address.ToString();
                             //TLV格式的数据指针偏移4
                             binaryReader.BaseStream.Position = 4;
                             //开始读取TLV格式的数据
