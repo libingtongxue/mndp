@@ -21,7 +21,7 @@ namespace mndp
                 Console.SetCursorPosition(0, 0);
                 if (mndp.GetPortStatus())
                 {
-                    Console.WriteLine("Port Is Not Available");
+                    Console.Write("Port Is Not Available");
                     for (int i = 0; i < 6; i++)
                     {
                         Console.Write(".");
