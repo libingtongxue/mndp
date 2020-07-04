@@ -30,7 +30,7 @@ namespace mndp
                 }
                 else
                 {
-                    break;
+                    PortFlag = false;
                 }
                 Thread.Sleep(1000);
             }
