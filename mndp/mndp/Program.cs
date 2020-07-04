@@ -19,7 +19,7 @@ namespace mndp
             {
                 if (mndp.GetPortStatus())
                 {
-                    Console.WriteLine("端口被占用");
+                    Console.WriteLine("Port Is Not Available");
                 }
                 else
                 {
@@ -75,17 +75,19 @@ namespace mndp
         readonly Thread threadReceive;
         static readonly List<MikroTikInfo> mikroTikInfos = new List<MikroTikInfo>();
         static bool sendFlag = true;
+        static readonly string sendName = "Send";
         static bool receiveFlag = true;
+        static readonly string receiveName = "Receive";
         public MKMndp()
         {
             IPBroadcast = new IPEndPoint(IPAddress.Broadcast, Port);
             threadSend = new Thread(new ThreadStart(SendMsg))
             {
-                Name = "Send"
+                Name = sendName
             };
             threadReceive = new Thread(new ThreadStart(ReceiveMsg))
             {
-                Name = "Receive"
+                Name = receiveName
             };
         }
         public bool GetPortStatus()
