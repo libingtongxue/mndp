@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 
 namespace mndp
 {
@@ -12,8 +13,21 @@ namespace mndp
     {
         static void Main(string[] args)
         {
-            MKMndp mkMndp = new MKMndp();
-            mkMndp.Start();
+            MKMndp mndp = new MKMndp();
+            bool PortFlag = true;
+            while(PortFlag)
+            {
+                if (mndp.GetPortStatus())
+                {
+                    Console.WriteLine("端口被占用");
+                }
+                else
+                {
+                    break;
+                }
+                Thread.Sleep(1000);
+            }
+            mndp.Start();
             bool Flag = true;
             while (Flag)
             {
@@ -28,7 +42,7 @@ namespace mndp
                 }
                 else
                 {
-                    for(int i = 0; i < mkMndp.GetMikroTikInfos.Count; i++)
+                    for(int i = 0; i < mndp.GetMikroTikInfos.Count; i++)
                     {
                         Console.Write(".");
                         Thread.Sleep(50);
@@ -36,8 +50,8 @@ namespace mndp
                     Thread.Sleep(300);
                 }
             }
-            mkMndp.Stop();
-            List<MikroTikInfo> mikroTikInfos = mkMndp.GetMikroTikInfos;
+            mndp.Stop();
+            List<MikroTikInfo> mikroTikInfos = mndp.GetMikroTikInfos;
             mikroTikInfos.ForEach((m) => Console.WriteLine("IPAddr:{0},MacAddr:{1},Identity:{2},Version:{3},Platform:{4},Uptime:{5},Board:{6}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform, m.Uptime, m.Board));
         }
     }
@@ -73,6 +87,25 @@ namespace mndp
             {
                 Name = "Receive"
             };
+        }
+        public bool GetPortStatus()
+        {
+            bool portStatus = false;
+            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+            IPEndPoint[] endPoints = properties.GetActiveUdpListeners();
+            foreach (IPEndPoint e in endPoints)
+            {
+                if(e.Address.ToString() != IPAddress.Any.ToString())                   
+                {
+                    Console.WriteLine(e.ToString());
+                    if (e.Port == Port)
+                    {
+                        portStatus = true;
+                        break;
+                    }     
+                }
+            }
+            return portStatus;
         }
         public void Start()
         {
@@ -282,7 +315,7 @@ namespace mndp
             if (threadReceive.ThreadState != ThreadState.Aborted)
             {
                 receiveFlag = false;
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
                 if (threadSend.ThreadState != ThreadState.Aborted)
                 {
                     sendFlag = false;
