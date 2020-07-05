@@ -65,17 +65,17 @@ namespace mndp
     }
     class MKMndp
     {
-        static readonly ushort TlvTypeMacAddr = 1;
-        static readonly ushort TlvTypeIdentity = 5;
-        static readonly ushort TlvTypeVersion = 7;
-        static readonly ushort TlvTypePlatform = 8;
-        static readonly ushort TlvTypeUptime = 10;
-        static readonly ushort TlvTypeSoftwareID = 11;
-        static readonly ushort TlvTypeBoard = 12;
-        static readonly ushort TlvTypeUnpack = 14;
-        static readonly ushort TlvTypeIPv6Addr = 15;
-        static readonly ushort TlvTypeInterface = 16;
-        static readonly int Port = 5678;
+        const ushort TlvTypeMacAddr = 1;
+        const ushort TlvTypeIdentity = 5;
+        const ushort TlvTypeVersion = 7;
+        const ushort TlvTypePlatform = 8;
+        const ushort TlvTypeUptime = 10;
+        const ushort TlvTypeSoftwareID = 11;
+        const ushort TlvTypeBoard = 12;
+        const ushort TlvTypeUnpack = 14;
+        const ushort TlvTypeIPv6Addr = 15;
+        const ushort TlvTypeInterface = 16;
+        const int Port = 5678;
         static readonly Byte[] sendBytes = new Byte[] { 0x00, 0x00, 0x00, 0x00 };
         static readonly UdpClient udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port));
         static IPEndPoint IPBroadcast;
