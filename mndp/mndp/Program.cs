@@ -75,6 +75,7 @@ namespace mndp
         const ushort TlvTypeUnpack = 14;
         const ushort TlvTypeIPv6Addr = 15;
         const ushort TlvTypeInterface = 16;
+        const ushort TlvTypeUnknown = 17;
         const int Port = 5678;
         static readonly Byte[] sendBytes = new Byte[] { 0x00, 0x00, 0x00, 0x00 };
         static readonly UdpClient udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port));
@@ -171,6 +172,11 @@ namespace mndp
                             //TLV格式的数据指针偏移4
                             binaryReader.BaseStream.Position = 4;
                             //开始读取TLV格式的数据
+                            //递归方法读取二进制流的数据。
+                            ReadBytes(binaryReader, ref mikroTikInfo);
+                            //注释掉
+                            //逐一读取二进制流的数据
+                            /*
                             byte[] Mac_Type = binaryReader.ReadBytes(2);
                             Array.Reverse(Mac_Type);
                             byte[] Mac_Length = binaryReader.ReadBytes(2);
@@ -281,10 +287,12 @@ namespace mndp
                             {
                                 mikroTikInfo.InterfaceName = InterfaceName;
                             }
+                            */
                             bool flag = false;
                             foreach (MikroTikInfo t in mikroTikInfos)
                             {
-                                if (t.MacAddr == MacAddr)
+                                //if (t.MacAddr == MacAddr)
+                                if (t.IPAddr == IPAddr)
                                 {
                                     int i = mikroTikInfos.IndexOf(t);
                                     ListRemove lr = new ListRemove(MikroTikInfoRemove);
@@ -303,6 +311,52 @@ namespace mndp
                         }
                     }
                 }
+            }
+        }
+        void ReadBytes(BinaryReader binaryReader,ref MikroTikInfo mikroTikInfo)
+        {
+            byte[] Type = binaryReader.ReadBytes(2);
+            Array.Reverse(Type);
+            byte[] Length = binaryReader.ReadBytes(2);
+            Array.Reverse(Length);
+            ushort Length_Value = BitConverter.ToUInt16(Length);
+            byte[] Value = binaryReader.ReadBytes(Length_Value);
+            if(BitConverter.ToUInt16(Type) != TlvTypeUnknown)
+            {
+                switch (BitConverter.ToUInt16(Type))
+                {
+                    case TlvTypeMacAddr:
+                        mikroTikInfo.MacAddr = BitConverter.ToString(Value).Replace("-", ":");
+                        break;
+                    case TlvTypeIdentity:
+                        mikroTikInfo.Identity = Encoding.Default.GetString(Value);
+                        break;
+                    case TlvTypeVersion:
+                        mikroTikInfo.Version = Encoding.Default.GetString(Value);
+                        break;
+                    case TlvTypePlatform:
+                        mikroTikInfo.Platform = Encoding.Default.GetString(Value);
+                        break;
+                    case TlvTypeUptime:
+                        mikroTikInfo.Uptime = TimeSpan.FromSeconds(BitConverter.ToUInt32(Value, 0)).ToString().Replace(".", "d");
+                        break;
+                    case TlvTypeSoftwareID:
+                        mikroTikInfo.SoftwareID = Encoding.Default.GetString(Value);
+                        break;
+                    case TlvTypeBoard:
+                        mikroTikInfo.Board = Encoding.Default.GetString(Value);
+                        break;
+                    case TlvTypeUnpack:
+                        mikroTikInfo.Unpack = Encoding.Default.GetString(Value);
+                        break;
+                    case TlvTypeIPv6Addr:
+                        mikroTikInfo.IPv6Addr = Encoding.Default.GetString(Value);
+                        break;
+                    case TlvTypeInterface:
+                        mikroTikInfo.InterfaceName = Encoding.Default.GetString(Value);
+                        break;
+                }
+                ReadBytes(binaryReader,ref mikroTikInfo);             
             }
         }
         delegate void ListRemove(int i);
