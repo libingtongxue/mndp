@@ -179,11 +179,10 @@ namespace mndp
                             ReadBytes(binaryReader, ref mikroTikInfo);
                             //注释掉
                             //逐一读取二进制流的数据                                                       
-
+                            //ReadBytes_v2(binaryReader,ref mikroTikInfo);
                             foreach (MikroTikInfo t in mikroTikInfos)
                             {
-                                //if (t.MacAddr == MacAddr)
-                                if (t.IPAddr == IPAddr)
+                                if (t.MacAddr == mikroTikInfo.MacAddr)
                                 {
                                     int i = mikroTikInfos.IndexOf(t);
                                     ListRemove lr = new ListRemove(MikroTikInfoRemove);
