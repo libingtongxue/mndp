@@ -208,15 +208,12 @@ namespace mndp
                             }
                         }
                     }
-                    else
-                    {
-                        udpClient.Dispose();
-                    }
                 }
                 catch (ObjectDisposedException) { }
                 catch (SocketException) { }
                 catch (Exception) { }
             }
+            udpClient.Dispose();
         }
         void ReadBytes(BinaryReader binaryReader,ref MikroTikInfo mikroTikInfo)
         {
