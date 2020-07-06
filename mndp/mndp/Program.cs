@@ -34,8 +34,8 @@ namespace mndp
                 {
                     PortFlag = false;
                 }
-
             }
+            mndp.Ready();
             mndp.Start();
             bool Flag = true;
             while (Flag)
@@ -80,7 +80,7 @@ namespace mndp
         const ushort TlvTypeUnknown = 17;
         const int Port = 5678;
         static readonly Byte[] sendBytes = new Byte[] { 0x00, 0x00, 0x00, 0x00 };
-        static readonly UdpClient udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port));
+        static UdpClient udpClient;
         static IPEndPoint IPBroadcast;
         readonly Thread threadSend;
         readonly Thread threadReceive;
@@ -91,7 +91,6 @@ namespace mndp
         static readonly string receiveName = "Receive";
         public MKMndp()
         {
-            IPBroadcast = new IPEndPoint(IPAddress.Broadcast, Port);
             threadSend = new Thread(new ThreadStart(SendMsg))
             {
                 Name = sendName
@@ -101,6 +100,11 @@ namespace mndp
                 Name = receiveName
             };
         }
+        public void Ready()
+        {
+            udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port));            
+            IPBroadcast = new IPEndPoint(IPAddress.Broadcast, Port);
+        }
         public bool GetPortStatus()
         {
             bool PortStatus = false;
@@ -108,16 +112,10 @@ namespace mndp
             IPEndPoint[] endPoints = properties.GetActiveUdpListeners();
             foreach (IPEndPoint e in endPoints)
             {
-                if(e.Address.ToString() != IPAddress.Any.ToString())                   
+                if (e.Port == Port)
                 {
-                    if(e.Address.ToString() != IPAddress.Loopback.ToString())
-                    {
-                        if (e.Port == Port)
-                        {
-                            PortStatus = true;
-                            break;
-                        }     
-                    }
+                    PortStatus = true;
+                    break;
                 }
             }
             return PortStatus;
@@ -383,14 +381,14 @@ namespace mndp
             }
         }
         public void Stop()
-        {            
+        {
+            if (threadSend.ThreadState != ThreadState.Aborted)
+            {
+                sendFlag = false;
+            }
             if (threadReceive.ThreadState != ThreadState.Aborted)
             {
                 receiveFlag = false;
-                if (threadSend.ThreadState != ThreadState.Aborted)
-                {
-                    sendFlag = false;
-                }
             }
         }
     }
