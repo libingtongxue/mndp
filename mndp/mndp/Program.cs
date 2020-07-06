@@ -27,12 +27,14 @@ namespace mndp
                         Console.Write(".");
                         Thread.Sleep(50);
                     }
+                    //延时1S检查端口是否可用
+                    Thread.Sleep(1000);
                 }
                 else
                 {
                     PortFlag = false;
                 }
-                Thread.Sleep(1000);
+
             }
             mndp.Start();
             bool Flag = true;
@@ -101,21 +103,24 @@ namespace mndp
         }
         public bool GetPortStatus()
         {
-            bool portStatus = false;
+            bool PortStatus = false;
             IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
             IPEndPoint[] endPoints = properties.GetActiveUdpListeners();
             foreach (IPEndPoint e in endPoints)
             {
                 if(e.Address.ToString() != IPAddress.Any.ToString())                   
                 {
-                    if (e.Port == Port)
+                    if(e.Address.ToString() != IPAddress.Loopback.ToString())
                     {
-                        portStatus = true;
-                        break;
-                    }     
+                        if (e.Port == Port)
+                        {
+                            PortStatus = true;
+                            break;
+                        }     
+                    }
                 }
             }
-            return portStatus;
+            return PortStatus;
         }
         public void Start()
         {
