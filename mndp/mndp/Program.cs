@@ -102,8 +102,11 @@ namespace mndp
         }
         public void Ready()
         {
-            udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port));            
             IPBroadcast = new IPEndPoint(IPAddress.Broadcast, Port);
+            udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port))
+            {
+                EnableBroadcast = true
+            };
         }
         public bool GetPortStatus()
         {
@@ -149,8 +152,13 @@ namespace mndp
             {
                 if(sendFlag)
                 {
-                    udpClient.Send(sendBytes, sendBytes.Length, IPBroadcast);
-                    Thread.Sleep(1000);
+                    try
+                    {
+                        udpClient.Send(sendBytes, sendBytes.Length, IPBroadcast);
+                        Thread.Sleep(1000);
+                    }
+                    catch (ObjectDisposedException) { }
+                    catch (SocketException) { }                 
                 }
             }
         }
@@ -158,50 +166,56 @@ namespace mndp
         {
             while (receiveFlag)
             {
-                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                Byte[] receiveBytes = udpClient.Receive(ref RemoteIpEndPoint);
-                //ReceiveData:0000；
-                if (receiveFlag)
+                try
                 {
-                    if (receiveBytes.Length > 4)
+                    IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    Byte[] receiveBytes = udpClient.Receive(ref RemoteIpEndPoint);
+                    //ReceiveData:0000；
+                    if (receiveFlag)
                     {
-                        //可能返回0.0.0.0未配置的设备。过滤掉。
-                        if (IPAddress.Any.ToString() != RemoteIpEndPoint.Address.ToString())
+                        if (receiveBytes.Length > 4)
                         {
-                            using MemoryStream memoryStream = new MemoryStream(receiveBytes);
-                            using BinaryReader binaryReader = new BinaryReader(memoryStream);
-                            string IPAddr = RemoteIpEndPoint.Address.ToString(); 
-                            MikroTikInfo mikroTikInfo = new MikroTikInfo()
+                            //可能返回0.0.0.0未配置的设备。过滤掉。
+                            if (IPAddress.Any.ToString() != RemoteIpEndPoint.Address.ToString())
                             {
-                                IPAddr = IPAddr
-                            };
-                            //TLV格式的数据指针偏移4
-                            binaryReader.BaseStream.Position = 4;
-                            //开始读取TLV格式的数据
-                            //递归方法读取二进制流的数据。
-                            ReadBytes(binaryReader, ref mikroTikInfo);
-                            //注释掉
-                            //逐一读取二进制流的数据                                                       
-                            //ReadBytes_v2(binaryReader,ref mikroTikInfo);
-                            foreach (MikroTikInfo t in mikroTikInfos)
-                            {
-                                if (t.MacAddr == mikroTikInfo.MacAddr)
+                                using MemoryStream memoryStream = new MemoryStream(receiveBytes);
+                                using BinaryReader binaryReader = new BinaryReader(memoryStream);
+                                string IPAddr = RemoteIpEndPoint.Address.ToString();
+                                MikroTikInfo mikroTikInfo = new MikroTikInfo()
                                 {
-                                    int i = mikroTikInfos.IndexOf(t);
-                                    ListRemove lr = new ListRemove(MikroTikInfoRemove);
-                                    lr(i);
-                                    break;
+                                    IPAddr = IPAddr
+                                };
+                                //TLV格式的数据指针偏移4
+                                binaryReader.BaseStream.Position = 4;
+                                //开始读取TLV格式的数据
+                                //递归方法读取二进制流的数据。
+                                ReadBytes(binaryReader, ref mikroTikInfo);
+                                //注释掉
+                                //逐一读取二进制流的数据                                                       
+                                //ReadBytes_v2(binaryReader,ref mikroTikInfo);
+                                foreach (MikroTikInfo t in mikroTikInfos)
+                                {
+                                    if (t.MacAddr == mikroTikInfo.MacAddr)
+                                    {
+                                        int i = mikroTikInfos.IndexOf(t);
+                                        ListRemove lr = new ListRemove(MikroTikInfoRemove);
+                                        lr(i);
+                                        break;
+                                    }
                                 }
+                                ListAdd la = new ListAdd(MikroTikInfoAdd);
+                                la(mikroTikInfo);
                             }
-                            ListAdd la = new ListAdd(MikroTikInfoAdd);
-                            la(mikroTikInfo);
                         }
                     }
+                    else
+                    {
+                        udpClient.Dispose();
+                    }
                 }
-                else
-                {
-                    udpClient.Dispose();
-                }
+                catch (ObjectDisposedException) { }
+                catch (SocketException) { }
+                catch (Exception) { }
             }
         }
         void ReadBytes(BinaryReader binaryReader,ref MikroTikInfo mikroTikInfo)
