@@ -144,8 +144,11 @@ namespace mndp
         {
             while (sendFlag)
             {
-                udpClient.Send(sendBytes, sendBytes.Length, IPBroadcast);
-                Thread.Sleep(1000);
+                if(sendFlag)
+                {
+                    udpClient.Send(sendBytes, sendBytes.Length, IPBroadcast);
+                    Thread.Sleep(1000);
+                }
             }
         }
         private void ReceiveMsg()
@@ -176,7 +179,7 @@ namespace mndp
                             ReadBytes(binaryReader, ref mikroTikInfo);
                             //注释掉
                             //逐一读取二进制流的数据                                                       
-                            bool flag = false;
+
                             foreach (MikroTikInfo t in mikroTikInfos)
                             {
                                 //if (t.MacAddr == MacAddr)
@@ -185,19 +188,17 @@ namespace mndp
                                     int i = mikroTikInfos.IndexOf(t);
                                     ListRemove lr = new ListRemove(MikroTikInfoRemove);
                                     lr(i);
-                                    ListAdd la = new ListAdd(MikroTikInfoAdd);
-                                    la(mikroTikInfo);
-                                    flag = true;
                                     break;
                                 }
                             }
-                            if (!flag)
-                            {
-                                ListAdd la = new ListAdd(MikroTikInfoAdd);
-                                la(mikroTikInfo);
-                            }
+                            ListAdd la = new ListAdd(MikroTikInfoAdd);
+                            la(mikroTikInfo);
                         }
                     }
+                }
+                else
+                {
+                    udpClient.Dispose();
                 }
             }
         }
@@ -382,7 +383,6 @@ namespace mndp
             if (threadReceive.ThreadState != ThreadState.Aborted)
             {
                 receiveFlag = false;
-                Thread.Sleep(500);
                 if (threadSend.ThreadState != ThreadState.Aborted)
                 {
                     sendFlag = false;
