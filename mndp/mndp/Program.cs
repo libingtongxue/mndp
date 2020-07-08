@@ -35,7 +35,6 @@ namespace mndp
                     PortFlag = false;
                 }
             }
-            mndp.Ready();
             mndp.Start();
             bool Flag = true;
             while (Flag)
@@ -100,14 +99,6 @@ namespace mndp
                 Name = receiveName
             };
         }
-        public void Ready()
-        {
-            IPBroadcast = new IPEndPoint(IPAddress.Broadcast, Port);
-            udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port))
-            {
-                EnableBroadcast = true
-            };
-        }
         public bool GetPortStatus()
         {
             bool PortStatus = false;
@@ -125,12 +116,17 @@ namespace mndp
         }
         public void Start()
         {
+            IPBroadcast = new IPEndPoint(IPAddress.Broadcast, Port);
+            udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port))
+            {
+                EnableBroadcast = true
+            };
             //SendMsgThread
             if (threadSend.ThreadState != ThreadState.Running)
             {
                 threadSend.Priority = ThreadPriority.AboveNormal;
                 threadSend.Start();
-                if(threadSend.ThreadState == ThreadState.Running)
+                if (threadSend.ThreadState == ThreadState.Running)
                 {
                     //Console.WriteLine("ThreadSend Is Running");
                 }
@@ -140,7 +136,7 @@ namespace mndp
             {
                 threadReceive.Priority = ThreadPriority.AboveNormal;
                 threadReceive.Start();
-                if(threadReceive.ThreadState == ThreadState.Running)
+                if (threadReceive.ThreadState == ThreadState.Running)
                 {
                     //Console.WriteLine("ThreadReceive Is Running");
                 }
