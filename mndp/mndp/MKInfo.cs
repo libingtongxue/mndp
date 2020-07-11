@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace mndp
+﻿namespace mndp
 {
-    class MikroTikInfo
+    class MKInfo
     {
         public string IPAddr { get; set; }
         public string MacAddr { get; set; }

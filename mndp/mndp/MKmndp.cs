@@ -28,7 +28,7 @@ namespace mndp
         static IPEndPoint IPBroadcast;
         readonly Thread threadSend;
         readonly Thread threadReceive;
-        static readonly List<MikroTikInfo> mikroTikInfos = new List<MikroTikInfo>();
+        static readonly List<MKInfo> mikroTikInfos = new List<MKInfo>();
         static bool sendFlag = true;
         static readonly string sendName = "Send";
         static bool receiveFlag = true;
@@ -122,7 +122,7 @@ namespace mndp
                                 using MemoryStream memoryStream = new MemoryStream(receiveBytes);
                                 using BinaryReader binaryReader = new BinaryReader(memoryStream);
                                 string IPAddr = RemoteIpEndPoint.Address.ToString();
-                                MikroTikInfo mikroTikInfo = new MikroTikInfo()
+                                MKInfo mikroTikInfo = new MKInfo()
                                 {
                                     IPAddr = IPAddr
                                 };
@@ -134,7 +134,7 @@ namespace mndp
                                 //注释掉
                                 //逐一读取二进制流的数据                                                       
                                 //ReadBytes_v2(binaryReader,ref mikroTikInfo);
-                                foreach (MikroTikInfo t in mikroTikInfos)
+                                foreach (MKInfo t in mikroTikInfos)
                                 {
                                     if (t.MacAddr == mikroTikInfo.MacAddr)
                                     {
@@ -156,7 +156,7 @@ namespace mndp
             }
             udpClient.Dispose();
         }
-        void ReadBytes(BinaryReader binaryReader, ref MikroTikInfo mikroTikInfo)
+        void ReadBytes(BinaryReader binaryReader, ref MKInfo mikroTikInfo)
         {
             byte[] Type = binaryReader.ReadBytes(2);
             Array.Reverse(Type);
@@ -202,7 +202,7 @@ namespace mndp
                 ReadBytes(binaryReader, ref mikroTikInfo);
             }
         }
-        void ReadBytes_v2(BinaryReader binaryReader, ref MikroTikInfo mikroTikInfo)
+        void ReadBytes_v2(BinaryReader binaryReader, ref MKInfo mikroTikInfo)
         {
             byte[] Mac_Type = binaryReader.ReadBytes(2);
             Array.Reverse(Mac_Type);
@@ -320,12 +320,12 @@ namespace mndp
         {
             mikroTikInfos.RemoveAt(i);
         }
-        delegate void ListAdd(MikroTikInfo m);
-        private void MikroTikInfoAdd(MikroTikInfo m)
+        delegate void ListAdd(MKInfo m);
+        private void MikroTikInfoAdd(MKInfo m)
         {
             mikroTikInfos.Add(m);
         }
-        public List<MikroTikInfo> GetMikroTikInfos
+        public List<MKInfo> GetMikroTikInfos
         {
             get
             {

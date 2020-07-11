@@ -6,8 +6,5 @@
     <SignAssembly>false</SignAssembly>
     <Description>MikorTik Neighbor Discovery Protocol</Description>
     <Authors>LiBing</Authors>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <AssemblyOriginatorKeyFile>LiBing.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-
 </Project>
