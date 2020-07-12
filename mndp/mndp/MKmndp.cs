@@ -30,8 +30,8 @@ namespace mndp
         readonly Thread threadReceive;
         static readonly List<MKInfo> mikroTikInfos = new List<MKInfo>();
         static bool sendFlag = true;
-        static readonly string sendName = "Send";
         static bool receiveFlag = true;
+        static readonly string sendName = "Send";
         static readonly string receiveName = "Receive";
         public MKMndp()
         {
