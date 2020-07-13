@@ -8,7 +8,7 @@ namespace mndp
     {
         static void Main(string[] args)
         {
-            MKMndp mndp = new MKMndp();
+            MKmndp mndp = new MKmndp();
             bool PortFlag = true;
             while(PortFlag)
             {

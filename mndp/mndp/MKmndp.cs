@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace mndp
 {
-    class MKMndp
+    class MKmndp
     {
         const ushort TlvTypeMacAddr = 1;
         const ushort TlvTypeIdentity = 5;
@@ -23,7 +23,7 @@ namespace mndp
         const ushort TlvTypeInterface = 16;
         const ushort TlvTypeUnknown = 17;
         const int Port = 5678;
-        static readonly Byte[] sendBytes = new Byte[] { 0x00, 0x00, 0x00, 0x00 };
+        static readonly byte[] sendBytes = new byte[] { 0x00, 0x00, 0x00, 0x00 };
         static UdpClient udpClient;
         static IPEndPoint IPBroadcast;
         readonly Thread threadSend;
@@ -33,7 +33,7 @@ namespace mndp
         static bool receiveFlag = true;
         static readonly string sendName = "Send";
         static readonly string receiveName = "Receive";
-        public MKMndp()
+        public MKmndp()
         {
             threadSend = new Thread(new ThreadStart(SendMsg))
             {
