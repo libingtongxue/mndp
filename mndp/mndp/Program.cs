@@ -10,7 +10,7 @@ namespace mndp
         {
             MKmndp mndp = new MKmndp();
             bool PortFlag = true;
-            while(PortFlag)
+            while (PortFlag)
             {
                 Console.Clear();
                 Console.SetCursorPosition(0, 0);
@@ -46,7 +46,7 @@ namespace mndp
                 else
                 {
                     Console.Write("Scanning");
-                    for(int i = 0; i < mndp.GetMikroTikInfos.Count; i++)
+                    for (int i = 0; i < mndp.GetMikroTikInfos.Count; i++)
                     {
                         Console.Write(".");
                         Thread.Sleep(50);

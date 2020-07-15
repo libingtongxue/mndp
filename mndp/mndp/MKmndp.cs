@@ -33,6 +33,7 @@ namespace mndp
         static bool receiveFlag = true;
         static readonly string sendName = "Send";
         static readonly string receiveName = "Receive";
+        private static object lockObj = new object();
         public MKmndp()
         {
             threadSend = new Thread(new ThreadStart(SendMsg))
@@ -139,13 +140,19 @@ namespace mndp
                                     if (t.MacAddr == mikroTikInfo.MacAddr)
                                     {
                                         int i = mikroTikInfos.IndexOf(t);
-                                        ListRemove lr = new ListRemove(MikroTikInfoRemove);
-                                        lr(i);
+                                        lock (lockObj)
+                                        {
+                                            ListRemove lr = new ListRemove(MikroTikInfoRemove);
+                                            lr(i);
+                                        }
                                         break;
                                     }
                                 }
-                                ListAdd la = new ListAdd(MikroTikInfoAdd);
-                                la(mikroTikInfo);
+                                lock (lockObj)
+                                {
+                                    ListAdd la = new ListAdd(MikroTikInfoAdd);
+                                    la(mikroTikInfo);
+                                }
                             }
                         }
                     }
@@ -329,7 +336,10 @@ namespace mndp
         {
             get
             {
-                return mikroTikInfos;
+                lock (lockObj)
+                {
+                    return mikroTikInfos;
+                }
             }
         }
         public void Stop()
