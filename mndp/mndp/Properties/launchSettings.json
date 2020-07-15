@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "mndp": {
+      "commandName": "Project",
+      "remoteDebugEnabled": false
+    }
+  }
+}

@@ -6,5 +6,9 @@
     <SignAssembly>false</SignAssembly>
     <Description>MikorTik Neighbor Discovery Protocol</Description>
     <Authors>LiBing</Authors>
+
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>mndp</ToolCommandName>
+    <PackageOutputPath>nupkg</PackageOutputPath>
   </PropertyGroup>
 </Project>
