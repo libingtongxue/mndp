@@ -33,7 +33,7 @@ namespace mndp
         static bool receiveFlag = true;
         static readonly string sendName = "Send";
         static readonly string receiveName = "Receive";
-        private static object lockObj = new object();
+        object lockObj = new object();
         public MKmndp()
         {
             threadSend = new Thread(new ThreadStart(SendMsg))
@@ -140,19 +140,13 @@ namespace mndp
                                     if (t.MacAddr == mikroTikInfo.MacAddr)
                                     {
                                         int i = mikroTikInfos.IndexOf(t);
-                                        lock (lockObj)
-                                        {
                                             ListRemove lr = new ListRemove(MikroTikInfoRemove);
                                             lr(i);
-                                        }
                                         break;
                                     }
                                 }
-                                lock (lockObj)
-                                {
                                     ListAdd la = new ListAdd(MikroTikInfoAdd);
                                     la(mikroTikInfo);
-                                }
                             }
                         }
                     }
@@ -324,21 +318,32 @@ namespace mndp
         }
         delegate void ListRemove(int i);
         private void MikroTikInfoRemove(int i)
-        {
-            mikroTikInfos.RemoveAt(i);
+        {                                
+            lock (lockObj)
+            {
+                mikroTikInfos.RemoveAt(i);                               
+            }
         }
         delegate void ListAdd(MKInfo m);
         private void MikroTikInfoAdd(MKInfo m)
-        {
-            mikroTikInfos.Add(m);
+        {                                       
+            lock (lockObj)
+            {
+                mikroTikInfos.Add(m);                      
+            }
         }
         public List<MKInfo> GetMikroTikInfos
         {
             get
-            {
+            { 
                 lock (lockObj)
                 {
-                    return mikroTikInfos;
+                     List<MKInfo> tempList = new List<MKInfo>();
+                     foreach(MKInfo m in mikroTikInfos)
+                     {
+                        tempList.Add(m);
+                     }
+                     return tempList;
                 }
             }
         }
