@@ -337,9 +337,9 @@ namespace mndp
             get
             { 
                 List<MKInfo> tempList = new List<MKInfo>();
-                foreach(MKInfo m in mikroTikInfos)
+                lock (lockObj)
                 {
-                    lock (lockObj)
+                    foreach(MKInfo m in mikroTikInfos)
                     {
                         tempList.Add(m);
                     }
