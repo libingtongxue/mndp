@@ -336,15 +336,15 @@ namespace mndp
         {
             get
             { 
-                lock (lockObj)
+                List<MKInfo> tempList = new List<MKInfo>();
+                foreach(MKInfo m in mikroTikInfos)
                 {
-                     List<MKInfo> tempList = new List<MKInfo>();
-                     foreach(MKInfo m in mikroTikInfos)
-                     {
+                    lock (lockObj)
+                    {
                         tempList.Add(m);
-                     }
-                     return tempList;
+                    }
                 }
+                return tempList;
             }
         }
         public void Stop()
