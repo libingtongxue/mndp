@@ -41,6 +41,8 @@ namespace mndp
         }
         static void Timer_Callback(object state)
         {
+            Console.Clear();
+            Console.SetCursorPosition(0,0);
             List<MKInfo> mikroTikInfos = mndp.GetMikroTikInfos;
             foreach(MKInfo m in mikroTikInfos)
             { 
