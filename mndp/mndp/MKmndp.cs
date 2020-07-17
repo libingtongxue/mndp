@@ -143,13 +143,13 @@ namespace mndp
                                     if (t.MacAddr == mikroTikInfo.MacAddr)
                                     {
                                         int i = mikroTikInfos.IndexOf(t);
-                                            ListRemove lr = new ListRemove(MikroTikInfoRemove);
-                                            lr(i);
+                                        ListRemove lr = new ListRemove(MikroTikInfoRemove);
+                                        lr(i);
                                         break;
                                     }
                                 }
-                                    ListAdd la = new ListAdd(MikroTikInfoAdd);
-                                    la(mikroTikInfo);
+                                ListAdd la = new ListAdd(MikroTikInfoAdd);
+                                la(mikroTikInfo);
                             }
                         }
                     }
@@ -338,13 +338,42 @@ namespace mndp
         public List<MKInfo> GetMikroTikInfos
         {
             get
-            { 
+            {
                 List<MKInfo> tempList = new List<MKInfo>();
                 lock (lockObj)
                 {
                     foreach(MKInfo m in mikroTikInfos)
                     {
                         tempList.Add(m);
+                    }
+                }
+                return tempList;
+            }
+        }
+        public List<string> GetMikroTikIpAddrs
+        {
+            get
+            {
+                List<string> tempList = new List<string> ();
+                lock(lockObj)
+                {
+                    foreach(MKInfo s in mikroTikInfos)
+                    {
+                        tempList.Add(s.IPAddr);
+                    }
+                }
+                return tempList;
+            }
+        }
+        public List<string> GetMikroTikMacAddrs
+            {
+            get{
+                List<string> tempList = new List<string> ();
+                lock(lockObj)
+                    {
+                    foreach(MKInfo s in mikroTikInfos)
+                        {
+                        tempList.Add(s.MacAddr);
                     }
                 }
                 return tempList;
