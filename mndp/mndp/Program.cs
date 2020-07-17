@@ -32,7 +32,7 @@ namespace mndp
             }
             mndp.Start();
             Timer.Change(0,10000);
-            while (Console.KeyAvailable)
+            while (!Console.KeyAvailable)
             {
                 Thread.Sleep(300);
             }
@@ -42,7 +42,10 @@ namespace mndp
         static void Timer_Callback(object state)
         {
             List<MKInfo> mikroTikInfos = mndp.GetMikroTikInfos;
-            mikroTikInfos.ForEach((m) => Console.WriteLine("IPAddr:{0},MacAddr:{1},Identity:{2},Version:{3},Platform:{4},Uptime:{5},Board:{6}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform, m.Uptime, m.Board));
+            foreach(MKInfo m in mikroTikInfos)
+            { 
+                Console.WriteLine("IPAddr:{0},MacAddr:{1},Identity:{2},Version:{3},Platform:{4},Uptime:{5},Board:{6}", m.IPAddr, m.MacAddr, m.Identity, m.Version, m.Platform, m.Uptime, m.Board);
+            }
         }
     }
 }
