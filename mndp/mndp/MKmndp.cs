@@ -62,10 +62,7 @@ namespace mndp
         }
         public void Start()
         {
-            IPBroadcast = new IPEndPoint()
-            {
-                Address = IPAddress.Broadcast,Port = Port
-            };
+            IPBroadcast = new IPEndPoint(IPAddress.Broadcast,Port);
             udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port))
             {
                 EnableBroadcast = true

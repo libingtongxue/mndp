@@ -10,24 +10,15 @@ namespace mndp
         static readonly MKmndp mndp = new MKmndp();
         static void Main(string[] args)
         {
-            bool PortFlag = true;
-            while (PortFlag)
+            Console.Clear();
+            Console.SetCursorPosition(0, 0);
+            if(mndp.GetPortStatus())
             {
-                Console.Clear();
-                Console.SetCursorPosition(0, 0);
-                if (mndp.GetPortStatus())
+                Console.Write("Port Is Not Available");
+                while (mndp.GetPortStatus())
                 {
-                    Console.Write("Port Is Not Available");
-                    for (int i = 0; i < 6; i++)
-                    {
-                        Console.Write(".");
-                        Thread.Sleep(50);
-                    }
+                    Console.Write(".");
                     Thread.Sleep(1000);
-                }
-                else
-                {
-                    PortFlag = false;
                 }
             }
             mndp.Start();
