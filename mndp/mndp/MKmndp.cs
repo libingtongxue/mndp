@@ -367,9 +367,9 @@ namespace mndp
             get{
                 List<string> tempList = new List<string> ();
                 lock(lockObj)
-                    {
+                {
                     foreach(MKInfo s in mikroTikInfos)
-                        {
+                    {
                         tempList.Add(s.MacAddr);
                     }
                 }
