@@ -363,8 +363,9 @@ namespace mndp
             }
         }
         public List<string> GetMikroTikMacAddrs
+        {
+            get
             {
-            get{
                 List<string> tempList = new List<string> ();
                 lock(lockObj)
                 {
