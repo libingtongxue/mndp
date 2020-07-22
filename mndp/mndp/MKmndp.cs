@@ -135,16 +135,20 @@ namespace mndp
                                 //注释掉
                                 //逐一读取二进制流的数据                                                       
                                 //ReadBytes_v2(binaryReader,ref mikroTikInfo);
-                                foreach (MKInfo t in mikroTikInfos)
+                                //更新List集合里面的数据
+                                //主要更新Uptime的数据
+                               foreach (MKInfo t in mikroTikInfos)
                                 {
                                     if (t.MacAddr == mikroTikInfo.MacAddr)
                                     {
+                                        //删除集合List的数据。
                                         int i = mikroTikInfos.IndexOf(t);
                                         ListRemove lr = new ListRemove(MikroTikInfoRemove);
                                         lr(i);
                                         break;
                                     }
                                 }
+                               //追加集合List的数据
                                 ListAdd la = new ListAdd(MikroTikInfoAdd);
                                 la(mikroTikInfo);
                             }
