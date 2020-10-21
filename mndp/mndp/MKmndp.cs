@@ -71,6 +71,8 @@ namespace mndp
             if (threadSend.ThreadState != ThreadState.Running)
             {
                 threadSend.Priority = ThreadPriority.AboveNormal;
+                threadSend.IsBackground = true;
+                threadSend.Name = "SendThread";
                 threadSend.Start();
                 if (threadSend.ThreadState == ThreadState.Running)
                 {
@@ -81,6 +83,8 @@ namespace mndp
             if (threadReceive.ThreadState != ThreadState.Running)
             {
                 threadReceive.Priority = ThreadPriority.AboveNormal;
+                threadReceive.IsBackground = true;
+                threadReceive.Name = "ReceiveThread";
                 threadReceive.Start();
                 if (threadReceive.ThreadState == ThreadState.Running)
                 {
