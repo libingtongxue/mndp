@@ -62,7 +62,7 @@ namespace mndp
         }
         public void Start()
         {
-            IPBroadcast = new IPEndPoint(IPAddress.Broadcast,Port);
+            IPBroadcast = new IPEndPoint(IPAddress.Broadcast, Port);
             udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, Port))
             {
                 EnableBroadcast = true
@@ -141,20 +141,30 @@ namespace mndp
                                 //ReadBytes_v2(binaryReader,ref mikroTikInfo);
                                 //更新List集合里面的数据
                                 //主要更新Uptime的数据
-                               foreach (MKInfo t in mikroTikInfos)
+                                int i = int.MinValue;
+                                foreach (MKInfo t in mikroTikInfos)
                                 {
                                     if (t.MacAddr == mikroTikInfo.MacAddr)
                                     {
                                         //删除集合List的数据。
-                                        int i = mikroTikInfos.IndexOf(t);
-                                        ListRemove lr = new ListRemove(MikroTikInfoRemove);
-                                        lr(i);
+                                        i = mikroTikInfos.IndexOf(t);
                                         break;
                                     }
                                 }
-                               //追加集合List的数据
-                                ListAdd la = new ListAdd(MikroTikInfoAdd);
-                                la(mikroTikInfo);
+                                if (i >= 0)
+                                {
+                                    //删除集合中存在
+                                    ListRemove lr = new ListRemove(MikroTikInfoRemove);
+                                    lr(i);
+                                    ListInsert li = new ListInsert(MikroTikInfoInsert);
+                                    li(i, mikroTikInfo);
+                                }
+                                else
+                                {
+                                    //追加集合List的数据
+                                    ListAdd la = new ListAdd(MikroTikInfoAdd);
+                                    la(mikroTikInfo);
+                                }
                             }
                         }
                     }
@@ -324,12 +334,21 @@ namespace mndp
                 mikroTikInfo.InterfaceName = InterfaceName;
             }
         }
+
         delegate void ListRemove(int i);
         private void MikroTikInfoRemove(int i)
-        {                                
+        {
             lock (lockObj)
             {
-                mikroTikInfos.RemoveAt(i);                               
+                mikroTikInfos.RemoveAt(i);
+            }
+        }
+        delegate void ListInsert(int i, MKInfo m);
+        private void MikroTikInfoInsert(int i,MKInfo m)
+        {
+            lock (lockObj)
+            {
+                mikroTikInfos.Insert(i, m);
             }
         }
         delegate void ListAdd(MKInfo m);
