@@ -33,16 +33,20 @@ namespace mndp
         static bool receiveFlag = true;
         static readonly string sendName = "Send";
         static readonly string receiveName = "Receive";
-        object lockObj = new object();
+        readonly object lockObj = new object();
         public MKmndp()
         {
             threadSend = new Thread(new ThreadStart(SendMsg))
             {
-                Name = sendName
+                Name = sendName,
+                Priority = ThreadPriority.AboveNormal,
+                IsBackground = true
             };
             threadReceive = new Thread(new ThreadStart(ReceiveMsg))
             {
-                Name = receiveName
+                Name = receiveName,
+                Priority = ThreadPriority.AboveNormal,
+                IsBackground = true
             };
         }
         public bool GetPortStatus()
@@ -70,9 +74,6 @@ namespace mndp
             //SendMsgThread
             if (threadSend.ThreadState != ThreadState.Running)
             {
-                threadSend.Priority = ThreadPriority.AboveNormal;
-                threadSend.IsBackground = true;
-                threadSend.Name = "SendThread";
                 threadSend.Start();
                 if (threadSend.ThreadState == ThreadState.Running)
                 {
@@ -82,9 +83,6 @@ namespace mndp
             //ReceiveMsgThread
             if (threadReceive.ThreadState != ThreadState.Running)
             {
-                threadReceive.Priority = ThreadPriority.AboveNormal;
-                threadReceive.IsBackground = true;
-                threadReceive.Name = "ReceiveThread";
                 threadReceive.Start();
                 if (threadReceive.ThreadState == ThreadState.Running)
                 {
@@ -153,9 +151,10 @@ namespace mndp
                                 }
                                 if (i >= 0)
                                 {
-                                    //删除集合中存在
+                                    //删除集合中存在元素
                                     ListRemove lr = new ListRemove(MikroTikInfoRemove);
                                     lr(i);
+                                    //插入到删除元素得位置
                                     ListInsert li = new ListInsert(MikroTikInfoInsert);
                                     li(i, mikroTikInfo);
                                 }
@@ -212,7 +211,7 @@ namespace mndp
                         mikroTikInfo.Unpack = Encoding.Default.GetString(Value);
                         break;
                     case TlvTypeIPv6Addr:
-                        mikroTikInfo.IPv6Addr = Encoding.Default.GetString(Value);
+                        mikroTikInfo.IPv6Addr = new IPAddress(Value).ToString();
                         break;
                     case TlvTypeInterface:
                         mikroTikInfo.InterfaceName = Encoding.Default.GetString(Value);
