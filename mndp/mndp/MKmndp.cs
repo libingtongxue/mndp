@@ -74,6 +74,7 @@ namespace mndp
             //SendMsgThread
             if (threadSend.ThreadState != ThreadState.Running)
             {
+                threadSend.IsBackground = true;
                 threadSend.Start();
                 if (threadSend.ThreadState == ThreadState.Running)
                 {
@@ -83,6 +84,7 @@ namespace mndp
             //ReceiveMsgThread
             if (threadReceive.ThreadState != ThreadState.Running)
             {
+                threadReceive.IsBackground = true;
                 threadReceive.Start();
                 if (threadReceive.ThreadState == ThreadState.Running)
                 {
